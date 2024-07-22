@@ -1,0 +1,4 @@
+git config advice.addEmptyPathspec false
+
+git push --force-with-lease origin main
+
