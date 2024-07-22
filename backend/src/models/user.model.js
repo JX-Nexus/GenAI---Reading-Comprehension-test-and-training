@@ -34,7 +34,7 @@ const userSchema = new Schema(
         },
         avatar: {
             type: String,
-            required: [true, 'avatar is required'],
+            required: [false, 'avatar is required'],
         },
         readHistory: [
             {
@@ -48,7 +48,7 @@ const userSchema = new Schema(
                 trim: true,
             },
         ],
-        preferredeReadingTime: {
+        preferredReadingTime: {
             type: Number,  
             required: [true, 'Preferred Reading time is required'],
         },

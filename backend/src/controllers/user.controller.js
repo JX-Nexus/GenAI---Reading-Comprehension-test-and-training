@@ -8,7 +8,12 @@ import {
 } from '../utils/cloudinary.js';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import fs from 'fs';
+import path from 'path';
+import { createCanvas } from 'canvas';
+import { fileURLToPath } from 'url';
 import {FOLDER} from '../constants.js';
+import { error } from 'console';
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -28,49 +33,59 @@ const generateAccessAndRefreshToken = async (userId) => {
     }
 };
 
-function generateDefaultAvatar(fullname) {
-    return fullname.charAt(0).toUpperCase();
-}
+const generateDefaultAvatar = (fullname) => {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const initial = fullname.charAt(0).toUpperCase();
+    const avatarPath = path.join(__dirname, '../../public/temp', `${initial}.png`);
+
+    if (fs.existsSync(avatarPath)) {
+        return avatarPath;
+    }
+
+    const canvas = createCanvas(100, 100);
+    const context = canvas.getContext('2d');
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, 100, 100);
+    context.fillStyle = '#000000';
+    context.font = 'bold 50px Arial';
+    context.fillText(initial, 25, 70);
+
+    const buffer = canvas.toBuffer('image/png');
+    fs.writeFileSync(avatarPath, buffer);
+
+    return avatarPath;
+};
 
 const registerUser = asyncHandler(async (req, res) => {
-    const {fullname, email, username, password, occupation, preferredeReadingTime} = req.body;
+    const { fullname, email, username, password, occupation, preferredReadingTime } = req.body;
 
-    if (
-        [fullname, email, username, password, occupation,preferredeReadingTime ].some(
-            (field) => field?.trim === ''
-        )
-    ) {
+    if ([fullname, email, username, password, occupation, preferredReadingTime].some(field => field?.trim() === '')) {
         throw new ApiError(400, 'All fields are required');
     }
 
     const existedUser = await User.findOne({
-        $or: [{username}, {email}],
+        $or: [{ username }, { email }],
     });
 
     if (existedUser) {
-        throw new ApiError(
-            409,
-            'User with this username or email already exists'
-        );
+        throw new ApiError(409, 'User with this username or email already exists');
     }
 
-    const avatarLocalPath = req.files?.avatar?.[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+    let avatarLocalPath = req.files?.avatar?.[0]?.path;
 
     if (!avatarLocalPath) {
-        avatarLocalPath = generateDefaultAvatar(fullname)
+        avatarLocalPath = generateDefaultAvatar(fullname);
+
+        if(!avatarLocalPath){
+            throw new ApiError(500, 'Avatar Generation failed');
+        }
     }
 
-    // upload avatar to cloudinary
-    const avatar = await uploadFileOnCloudinary(avatarLocalPath, FOLDER.USERS);
-    const coverImage = await uploadFileOnCloudinary(
-        coverImageLocalPath,
-        FOLDER.USERS
-    );
+   
+    // const avatar = await uploadFileOnCloudinary(avatarLocalPath, FOLDER.USERS);
 
-    if (!avatar) {
-        throw new ApiError(400, 'Error while uploading avatar');
-    }
+    
 
     const user = await User.create({
         fullname,
@@ -78,25 +93,17 @@ const registerUser = asyncHandler(async (req, res) => {
         username,
         password,
         occupation,
-        preferredeReadingTime,
-        avatar: avatar.url,
-        coverImage: coverImage?.url || '',
+        preferredReadingTime,
+        // avatar: avatar.url|| "",
     });
 
-    const createdUser = await User.findById(user._id).select(
-        '-password -refreshToken'
-    );
+    const createdUser = await User.findById(user._id).select('-password -refreshToken');
 
     if (!createdUser) {
-        throw new ApiError(
-            500,
-            'Something went wrong while registering the user'
-        );
+        throw new ApiError(500, 'Something went wrong while registering the user');
     }
 
-    return res
-        .status(201)
-        .json(new ApiResponse(201, createdUser, 'User created successfully'));
+    return res.status(201).json(new ApiResponse(201, createdUser, 'User created successfully'));
 });
 
 const loginUser = asyncHandler(async (req, res) => {
