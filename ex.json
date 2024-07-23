@@ -1,0 +1,97 @@
+[
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You should classify the text into one of the following classes:[business, entertainment]"
+      },
+      { "role": "user", "content": "Give a passage for a {occupation}, who like {Geners} genre which can be read under 2  min" },
+      { "role": "model", "content": "In the heart of the ancient forest, where shadows linger and whispers of old magic still swirl in the air, there was a forgotten village called Eldergrove. The villagers spoke in hushed tones of a peculiar tower that stood on the outskirts of the village, cloaked in perpetual fog. No one knew its true origin or purpose, but legends claimed it was once the home of a powerful sorcerer who vanished without a trace.
+                                    One stormy night, when lightning cracked through the sky and the wind howled like a banshee, young Elara decided to unravel the mystery of the tower. Armed with only a flickering lantern and her unyielding curiosity, she ventured through the thick fog, her every step echoing in the eerie silence. As she approached the tower's ancient wooden door, she noticed strange symbols etched into the stone walls, glowing faintly in the storm's eerie light.
+                                    With a deep breath, Elara pushed open the door and stepped inside. The air was thick with dust and the scent of old parchment. The interior was a labyrinth of dusty bookshelves and cobweb-laden chandeliers. In the center of the room, an old book lay open on a pedestal, its pages filled with cryptic runes and illustrations of mythical creatures. Elara's heart raced as she reached out to touch the book, feeling an inexplicable chill run down her spine." },
+    { "role": "user", "content": "ask 12 question based on passage to evaluate the user" },
+    { "role": "model", "content":"What is the name of the forgotten village in the passage?
+
+What is the peculiar structure mentioned in the passage that stands on the outskirts of the village?
+
+What do the villagers say about the tower?
+
+On what kind of night does Elara decide to explore the tower?
+
+What items does Elara take with her when she ventures to the tower?
+
+What is described as being unusual about the symbols on the stone walls of the tower?
+
+What is the condition of the interior of the tower when Elara enters?
+
+Describe the book Elara finds on the pedestal.
+
+What effect does touching the book have on Elara?
+
+How does the passage describe the weather conditions during Elara’s exploration?
+
+What are the runes and illustrations in the book described as?
+
+What feeling does Elara experience as she touches the book?"}
+
+{ "role": "user", "content":"The user took 3 min to read the passage and here are the answers question wise
+
+1.Eldergrove
+
+2.A tower
+
+3.The villagers speak in hushed tones about its unknown origin and purpose, and legends claim it was once the home of a powerful sorcerer who vanished.
+
+4.A stormy night
+
+5.A flickering lantern
+
+6.They are glowing faintly in the storm's eerie light.
+
+7.It is a labyrinth of dusty bookshelves and cobweb-laden chandeliers, with thick dust and the scent of old parchment.
+
+8.It is old, lying open on a pedestal, filled with cryptic runes and illustrations of mythical creatures.
+
+9.She feels an inexplicable chill run down her spine.
+
+10.The weather is stormy, with lightning cracking through the sky and the wind howling.
+
+11.Cryptic runes and illustrations of mythical creatures.
+
+12.She experiences an inexplicable chill running down her spine.
+
+
+based on this and preffered geners recommend some {type of book} for the reader"}
+
+{ "role": "user", "content":"Based on the reader's interest in fantasy, horror, and mystery, and considering their accurate comprehension of the passage, here are some comic recommendations:
+
+"Sandman" by Neil Gaiman
+A dark and imaginative series blending fantasy, horror, and myth. It follows Dream, one of the Endless, as he navigates a world where dreams and reality intertwine.
+
+"Locke & Key" by Joe Hill and Gabriel Rodríguez
+This series combines mystery and supernatural horror, revolving around a family that discovers magical keys with extraordinary powers.
+
+"Hellboy" by Mike Mignola
+A series featuring a demon raised by humans who works as a paranormal investigator. It mixes dark folklore, horror, and fantasy elements.
+
+"The Walking Dead" by Robert Kirkman
+Although more on the horror side, this series delves into the post-apocalyptic world and the mysteries of human survival.
+
+"The League of Extraordinary Gentlemen" by Alan Moore
+A blend of classic literary characters in a mysterious, fantastical adventure. It combines elements of fantasy and mystery.
+
+"Bone" by Jeff Smith
+A fantasy epic with a charming yet mysterious storyline that evolves into darker themes as it progresses."}
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You should classify the text into one of the following classes:[business, entertainment]"
+      },
+      { "role": "user", "content": "Watch a live concert" },
+      { "role": "model", "content": "entertainment" }
+    ]
+  }
+]

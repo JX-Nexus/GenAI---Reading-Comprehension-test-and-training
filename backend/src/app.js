@@ -17,13 +17,14 @@ app.use(cookieParser());
 
 // Routes import
 import userRoutes from './routes/user.routes.js';
-
+import modelRoutes from './routes/model.routes.js'
 
 
 
 
 
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/model',modelRoutes)
 
 
 export {app};
