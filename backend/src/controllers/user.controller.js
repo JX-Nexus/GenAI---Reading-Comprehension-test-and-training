@@ -2,18 +2,10 @@ import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiError} from '../utils/ApiError.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import {User} from '../models/user.model.js';
-import {
-    uploadFileOnCloudinary,
-    deleteFileFromCloudinary,
-} from '../utils/cloudinary.js';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import fs from 'fs';
-import path from 'path';
-import { createCanvas } from 'canvas';
-import { fileURLToPath } from 'url';
-import {FOLDER} from '../constants.js';
-import { error } from 'console';
+
+
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -160,7 +152,14 @@ const loginUser = asyncHandler(async (req, res) => {
         );
 });
 
+const getCurrentUser = asyncHandler (async(req,res)=>{
+    return res
+    .status(200)
+    .json(new ApiResponse(200,req.user," Got current Successfully"))
+})
+
 export{
     registerUser,
     loginUser,
+    getCurrentUser,
 }
