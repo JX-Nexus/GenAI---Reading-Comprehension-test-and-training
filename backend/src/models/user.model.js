@@ -64,6 +64,11 @@ const userSchema = new Schema(
             type: String,
             required: [true, 'Occupation/Education Level is required'],
 
+        },
+        DOB: {
+            type: Date,
+            required: [true, 'The Date of birth is required'],
+
         }
     },
     {

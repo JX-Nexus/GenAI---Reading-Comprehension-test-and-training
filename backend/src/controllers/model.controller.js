@@ -12,7 +12,7 @@ console.log(`Gemini API Key in controller: ${process.env.GEMINI_API_KEY}`);
 
 const model = genAI.getGenerativeModel({
     model: "gemini-1.5-flash",
-    systemInstruction: "Act like a model trained to provide passages and questions based on those passages.when asked for passage only provide the passage nothing else and also you can provide anytype of passage as far as its withing the users preferences. Depending on how the questions are answered and how much time the user takes to read the passage, assign points. Additionally, based on the user's preferred genre and book type, recommend books to them. For example, if a user answers that the villain was right, recommend books that align with that perspective, whereas if someone answers that the villain was wrong, suggest books that align with that viewpoint",
+    systemInstruction: "Act as a model designed to generate passages and corresponding questions based on user preferences. When requested, provide only the passage, ensuring it aligns with the user's specified genres and preferences. Based on the user's answers to the questions and the time taken to read the passage, assign points to gauge their understanding and engagement.Additionally, use the user's answers and their preferred genres to recommend books. Tailor recommendations to reflect the user's perspectives. For example, if a user believes that a villain was justified, suggest books that explore similar themes or perspectives. Conversely, if a user disagrees with the villain's actions, recommend books that align with that viewpoint. When receiving questions and answers, the model should offer personalized book recommendations based on the user's preferences and responses.",
   });
   const generationConfig = {
     temperature: 1,
@@ -22,7 +22,27 @@ const model = genAI.getGenerativeModel({
     responseMimeType: "text/plain",
   };
 
+  function cleanAndFormatPassage(passage) {
+    if (!passage || typeof passage !== 'string') {
+      throw new Error('Invalid passage format.');
+    }
   
+    // Remove excessive markdown headers
+    let formattedPassage = passage.replace(/##\s*/g, '');
+  
+    // Remove excessive line breaks and extra spaces
+    formattedPassage = formattedPassage.replace(/\n\s*\n+/g, '\n\n').trim();
+  
+    // Replace excessive new lines with a single line break
+    formattedPassage = formattedPassage.replace(/\n+/g, '\n');
+  
+    // Format the passage with consistent spacing and alignment
+    formattedPassage = formattedPassage.split('\n').map(line => line.trim()).join('\n');
+  
+    return formattedPassage;
+  }
+  
+
   const generatePassage = async (occupation, genres, bookType) => {
   const Session = model.startChat({
     generationConfig,
@@ -70,7 +90,21 @@ const model = genAI.getGenerativeModel({
   
     return questions;
   };
+  function cleanQuestionsData(questionsArray) {
+    const cleanedData = questionsArray.map(item => {
+      // Remove leading numbers and whitespace from the question text
+      const question = item.text.replace(/^\d+\.\s*/, '');
+      const answer = item.answer;
+      return { question, answer };
+    });
   
+    // Convert cleanedData to the required format
+    const questionsAndAnswers = cleanedData.map(item => 
+      `Question: ${item.question}, Answer: ${item.answer}`
+    ).join('; ');
+  
+    return questionsAndAnswers;
+  }
   
 
 
@@ -182,7 +216,7 @@ const getPassageAndsaveAnswers = asyncHandler(async (req, res) => {
         // Find the question within the passage
         const question = passage.questions.id(questionId);
         if (question) {
-          // Update the question with the user's answer
+          
           question.answer = answerText;
         }
       }
@@ -190,23 +224,25 @@ const getPassageAndsaveAnswers = asyncHandler(async (req, res) => {
       // Save the updated passage
       await passage.save();
     }
-
-    // Generate recommendation
+    const passageQuestion = cleanQuestionsData(passage.questions) 
+   
     const finalBookType = bookType ? bookType : "Novel";
-    const prompt = `Based on the passage: "${passage.text}" and the following questions and answers: ${JSON.stringify(passage.questions)}, recommend a ${finalBookType} considering the user's answers and their understanding of grammar. Also, consider the genres: ${passage.genres}.`;
-
+    const prompt = `Based on the passage and the following questions and answers: ${passageQuestion}, recommend a ${finalBookType} considering the user's answers and their understanding of grammar. Also, consider the genres: ${passage.genres}.`;
+    
     const result = await model.generateContent(prompt, generatePassage.Session);
 
     // Make sure the result is handled properly
-    const responseText = result.response.content
-    console.log("This is model Response" ,responseText)
+    const response = result.response
+    const responseText = response.text()
+    const cleanText = cleanAndFormatPassage(responseText)
+    console.log(cleanText)
     return res.status(200).json(
       new ApiResponse(
         200,
         {
           text: passage.text,
           questions: passage.questions,
-          recommendation: responseText,
+           recommendation: responseText,
         },
         'Passage and questions updated successfully'
       )
