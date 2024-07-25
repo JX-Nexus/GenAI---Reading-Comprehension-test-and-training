@@ -18,7 +18,7 @@ export class AuthService {
             });
     
             if (response && response.data) {
-                return this.login({ id: response.data._id });
+                return this.login({ email, password});
             }
     
             

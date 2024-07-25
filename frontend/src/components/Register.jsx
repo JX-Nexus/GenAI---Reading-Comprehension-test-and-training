@@ -49,7 +49,7 @@ export function Register() {
         setSuccess(true);
         dispatch(login(user));
         setTimeout(() => {
-          navigate("/");
+          navigate("/rec");
         }, 1000); // Delay for a bit to show success message
       } else {
         throw new Error("Registration failed without error message.");
@@ -75,7 +75,7 @@ export function Register() {
         <CardDescription>Sign up for a new account.</CardDescription>
       </CardHeader>
       <CardContent className="p-4">
-        {error && <p className="text-red-500">{error.message}</p>}
+        {error && <p className="text-red-500">{error}</p>}
         {success && <p className="text-green-500">Registration successful!</p>}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-6">

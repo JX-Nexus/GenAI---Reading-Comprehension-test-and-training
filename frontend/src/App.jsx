@@ -1,5 +1,5 @@
 import { useState,useEffect } from 'react'
-
+import { useNavigate } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import authService from './server/auth.js'
@@ -7,7 +7,7 @@ import authService from './server/auth.js'
 function App() {
   const [count, setCount] = useState(0)
   const dispatch = useDispatch()
-
+  const navigate = useNavigate();
   useEffect(() => {
     const initializeApp = async () => {
       try {
@@ -35,7 +35,7 @@ function App() {
 
   return (
     <>
-    <div className='min-h-screen flex flex-wrap content-between bg-white'>
+    <div className='min-h-screen flex flex-wrap content-between bg-green-200'>
       <div className='w-full block'>
        
         <main>

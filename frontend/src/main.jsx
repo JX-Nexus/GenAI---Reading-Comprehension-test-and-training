@@ -6,10 +6,17 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from './store/store.js'
 
+import { authLayout } from './components'
+
+import HomePage from './pages/HomePage.jsx'
 import SignUp from './pages/SignUp.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 
-import GenresPage from './pages/GenresPage.jsx'
+import BookType from './pages/BookType.jsx'
+import MainPage from './pages/Mainpage.jsx'
+
+import Novel from './pages/Novel.jsx'
+import MangaGenres from './pages/Manga.jsx'
 
 const router = createBrowserRouter([
   {
@@ -18,7 +25,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <GenresPage />,
+        element:(
+        <authLayout>
+          <HomePage />
+        </authLayout>
+        ),
+    },
+      {
+        path: "/rec",
+        element: (
+          <authLayout>
+            <BookType />
+          </authLayout>
+          ),
     },
         {
             path: "/register",
@@ -27,7 +46,29 @@ const router = createBrowserRouter([
         {
           path: "/login",
           element: <LoginPage />,
-      },
+      },{
+        path: "manga/genres",
+        element: (
+          <authLayout>
+            <MangaGenres />
+          </authLayout>
+          ),
+    },
+    {
+      path: "novel/genres",
+      element: (
+        <authLayout>
+          <Novel />
+        </authLayout>
+        ),
+  },{
+    path: "/passage",
+    element: (
+      <authLayout>
+        <MainPage />
+      </authLayout>
+      ),
+},
      ]}])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
