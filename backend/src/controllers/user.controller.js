@@ -2,8 +2,7 @@ import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiError} from '../utils/ApiError.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import {User} from '../models/user.model.js';
-import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
+
 
 
 
@@ -25,59 +24,20 @@ const generateAccessAndRefreshToken = async (userId) => {
     }
 };
 
-const generateDefaultAvatar = (fullname) => {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const initial = fullname.charAt(0).toUpperCase();
-    const avatarPath = path.join(__dirname, '../../public/temp', `${initial}.png`);
-
-    if (fs.existsSync(avatarPath)) {
-        return avatarPath;
-    }
-
-    const canvas = createCanvas(100, 100);
-    const context = canvas.getContext('2d');
-    context.fillStyle = '#ffffff';
-    context.fillRect(0, 0, 100, 100);
-    context.fillStyle = '#000000';
-    context.font = 'bold 50px Arial';
-    context.fillText(initial, 25, 70);
-
-    const buffer = canvas.toBuffer('image/png');
-    fs.writeFileSync(avatarPath, buffer);
-
-    return avatarPath;
-};
-
 const registerUser = asyncHandler(async (req, res) => {
-    const { fullname, email, username, password, occupation, preferredReadingTime } = req.body;
+    const { fullname, email, username, password, occupation,preferredGenres, preferredReadingTime ,DOB } = req.body;
 
-    if ([fullname, email, username, password, occupation, preferredReadingTime].some(field => field?.trim() === '')) {
+    if ([fullname, email, username, password, occupation].some(field => field.trim() === '')) {
         throw new ApiError(400, 'All fields are required');
     }
 
     const existedUser = await User.findOne({
-        $or: [{ username }, { email }],
+        $or: [{ email }],
     });
 
     if (existedUser) {
-        throw new ApiError(409, 'User with this username or email already exists');
+        throw new ApiError(409, 'User with this email already exists');
     }
-
-    let avatarLocalPath = req.files?.avatar?.[0]?.path;
-
-    if (!avatarLocalPath) {
-        avatarLocalPath = generateDefaultAvatar(fullname);
-
-        if(!avatarLocalPath){
-            throw new ApiError(500, 'Avatar Generation failed');
-        }
-    }
-
-   
-    // const avatar = await uploadFileOnCloudinary(avatarLocalPath, FOLDER.USERS);
-
-    
 
     const user = await User.create({
         fullname,
@@ -86,7 +46,8 @@ const registerUser = asyncHandler(async (req, res) => {
         password,
         occupation,
         preferredReadingTime,
-        // avatar: avatar.url|| "",
+        preferredGenres,
+        DOB
     });
 
     const createdUser = await User.findById(user._id).select('-password -refreshToken');

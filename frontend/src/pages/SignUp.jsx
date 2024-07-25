@@ -1,12 +1,12 @@
 import React from 'react'
-import Container from './Container.jsx'
-import { Register } from './components'
+import { Register,Container } from '../components'
 
 function SignUp() {
   return (
-    <Container>
-      <Register/>
-    </Container>
+    
+      <Container>
+        <Register/>
+      </Container>
   )
 }
 

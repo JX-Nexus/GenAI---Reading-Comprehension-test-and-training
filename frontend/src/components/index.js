@@ -1,9 +1,12 @@
-import Header from "./header/header.jsx";
-import authLayout from "./authLayout.jsx";
-import Container from "./Container.jsx";
+import { Register } from "./Register";
+import Container from "./Container";
+import Login from "./Login";
 
-export{
-    Header,
-    authLayout,
-    Container
+export {
+    Register,
+    Container,
+    Login,
+    
+
+
 }

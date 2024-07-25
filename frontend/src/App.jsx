@@ -1,26 +1,53 @@
-import { useState } from 'react'
-import {Header} from './components'
+import { useState,useEffect } from 'react'
+
 import { Outlet } from 'react-router-dom'
-import './App.css'
+import { useDispatch } from 'react-redux'
+import authService from './server/auth.js'
 
 function App() {
   const [count, setCount] = useState(0)
+  const dispatch = useDispatch()
 
-  return !loading ? (
-    <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        const userData = await authService.getCurrentUser();
+        if (userData) {
+          dispatch(login({ userData }));
+        
+        } else {
+          dispatch(logout());
+        }
+  
+        
+
+        
+      } catch (error) {
+        console.error('Initialization error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    initializeApp();
+  }, [dispatch]);
+  
+
+  return (
+    <>
+    <div className='min-h-screen flex flex-wrap content-between bg-white'>
       <div className='w-full block'>
-        <Header />
+       
         <main>
           <div>            
           </div>
           <Outlet />
         </main>
+       
       </div>
     </div>
-  ) : (
-  <>
-  <p>Loading</p>
-  </>
+
+    </>
   )
 }
 
