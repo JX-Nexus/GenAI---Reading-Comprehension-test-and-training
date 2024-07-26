@@ -17,7 +17,7 @@ const BookTypeSelector = () => {
     if (value) {
       if (['Philosophy'].includes(value)) {
         navigate('/passage');
-      } else if (value === 'Religious Scriptures') {
+      } else if (value === 'Religious Scriptures' || 'Education') {
         navigate(`/${value.toLowerCase().replace(' ', '-')}/types`);
       } else {
         navigate(`/${value.toLowerCase().replace(' ', '-')}/genres`);

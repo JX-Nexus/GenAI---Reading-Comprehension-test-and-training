@@ -21,6 +21,7 @@ import Recommendation from './pages/Recommendation.jsx'
 import Novel from './pages/Novel.jsx'
 import MangaGenres from './pages/Manga.jsx'
 import ReligiousScriptures from './pages/ReligiousScriptures.jsx'
+import Education from './pages/Education.jsx'
 
 const router = createBrowserRouter([
   {
@@ -72,6 +73,13 @@ const router = createBrowserRouter([
         <ReligiousScriptures />
       </AuthLayout>
       ),
+},{
+  path: "education/types",
+  element: (
+    <AuthLayout>
+      <Education />
+    </AuthLayout>
+    ),
 },{
     path: "/passage",
     element: (

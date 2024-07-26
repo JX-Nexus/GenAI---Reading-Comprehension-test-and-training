@@ -312,13 +312,13 @@ const getRecommendation = asyncHandler(async (req, res) => {
 
   switch (bookType) {
     case 'Religious Scriptures':
-      prompt = `Recommend a religious scripture from ${mythology}, and ${scripturesName}.`;
+      prompt = `Recommend a religious scripture from ${mythology}, and ${scripturesName}. Format the recommendations in Markdown mode, with clear headings, bullet points, and spacing to enhance readability. Include a brief description, relevance to the user's interests, and any other notable aspects.`;
       break;
     case 'Education':
-      prompt = `Recommend a book for a ${selectedType} who wants to learn ${type}.`;
+      prompt = `Recommend a book for a ${selectedType} who wants to learn ${type}.Format the recommendations in Markdown mode, with clear headings, bullet points, and spacing to enhance readability. Include a brief description, relevance to the user's interests, and any other notable aspects.`;
       break;
     default:
-      prompt = `Recommend a ${bookType} for ${occupation} who likes the genres: ${genres}. `;
+      prompt = `Recommend a ${bookType} for ${occupation} who likes the genres: ${genres}. Format the recommendations in Markdown mode, ensuring good readability with appropriate headings, bullet points, and line spacing. Include brief descriptions and why each recommendation suits the user's preferences.Format the recommendations in Markdown mode, with clear headings, bullet points, and spacing to enhance readability. Include a brief description, relevance to the user's interests, and any other notable aspects.`;
   }
 
   try {
