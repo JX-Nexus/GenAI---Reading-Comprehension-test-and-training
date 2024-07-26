@@ -6,17 +6,21 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from './store/store.js'
 
-import { authLayout } from './components'
+import { AuthLayout } from './components'
 
 import HomePage from './pages/HomePage.jsx'
 import SignUp from './pages/SignUp.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 
+import QuestionAnswerForm from './pages/QuestionAndAnswer.jsx'
 import BookType from './pages/BookType.jsx'
 import MainPage from './pages/Mainpage.jsx'
+import Result from './pages/Results.jsx'
+import Recommendation from './pages/Recommendation.jsx'
 
 import Novel from './pages/Novel.jsx'
 import MangaGenres from './pages/Manga.jsx'
+import ReligiousScriptures from './pages/ReligiousScriptures.jsx'
 
 const router = createBrowserRouter([
   {
@@ -26,17 +30,17 @@ const router = createBrowserRouter([
       {
         path: "/",
         element:(
-        <authLayout>
+        <AuthLayout>
           <HomePage />
-        </authLayout>
+        </AuthLayout>
         ),
     },
       {
         path: "/rec",
         element: (
-          <authLayout>
+          <AuthLayout>
             <BookType />
-          </authLayout>
+          </AuthLayout>
           ),
     },
         {
@@ -49,25 +53,55 @@ const router = createBrowserRouter([
       },{
         path: "manga/genres",
         element: (
-          <authLayout>
+          <AuthLayout>
             <MangaGenres />
-          </authLayout>
+          </AuthLayout>
           ),
     },
     {
       path: "novel/genres",
       element: (
-        <authLayout>
+        <AuthLayout>
           <Novel />
-        </authLayout>
+        </AuthLayout>
         ),
   },{
+    path: "religious-scriptures/types",
+    element: (
+      <AuthLayout>
+        <ReligiousScriptures />
+      </AuthLayout>
+      ),
+},{
     path: "/passage",
     element: (
-      <authLayout>
+      <AuthLayout>
         <MainPage />
-      </authLayout>
+      </AuthLayout>
       ),
+      
+},{
+  path: "/passage/:id",
+  element: (
+    <AuthLayout>
+      <QuestionAnswerForm />
+    </AuthLayout>
+    ),
+},{
+  path: "/passage/:id/result",
+  element: (
+    <AuthLayout>
+      <Result />
+    </AuthLayout>
+    ),
+},
+{
+  path: "/recommendation",
+  element: (
+    <AuthLayout>
+      <Recommendation />
+    </AuthLayout>
+    ),
 },
      ]}])
 

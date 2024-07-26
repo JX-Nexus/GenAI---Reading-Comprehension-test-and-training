@@ -47,17 +47,44 @@ const Novel = () => {
     const value = event.target.value;
     const checked = event.target.checked;
 
-    // Handle genre selection and update type
+    // Determine if 'Fiction' or 'Non-Fiction' needs to be added or removed
+    const genreIsFiction = fictionGenres.includes(value);
+    const genreIsNonFiction = nonFictionGenres.includes(value);
+
     if (checked) {
-      if (selectedType === 'non-fiction' && nonFictionGenres.includes(value)) {
-        setSelectedGenresLocal([...selectedGenres, value, 'Non-Fiction']);
-      } else if (selectedType === 'fiction' && fictionGenres.includes(value)) {
-        setSelectedGenresLocal([...selectedGenres, value, 'Fiction']);
-      } else {
-        setSelectedGenresLocal([...selectedGenres, value]);
+      let newGenres = [...selectedGenres];
+
+      if (genreIsNonFiction) {
+        // Remove 'Fiction' if a non-fiction genre is selected
+        newGenres = newGenres.filter((genre) => genre !== 'Fiction');
+        // Add 'Non-Fiction' if not already present
+        if (!newGenres.includes('Non-Fiction')) {
+          newGenres.push('Non-Fiction');
+        }
+      } else if (genreIsFiction) {
+        // Remove 'Non-Fiction' if a fiction genre is selected
+        newGenres = newGenres.filter((genre) => genre !== 'Non-Fiction');
+        // Add 'Fiction' if not already present
+        if (!newGenres.includes('Fiction')) {
+          newGenres.push('Fiction');
+        }
       }
+
+      // Add the selected genre
+      if (!newGenres.includes(value)) {
+        newGenres.push(value);
+      }
+
+      setSelectedGenresLocal(newGenres);
     } else {
-      setSelectedGenresLocal(selectedGenres.filter((genre) => genre !== value && genre !== 'Non-Fiction' && genre !== 'Fiction'));
+      // Remove the genre and its associated fiction/non-fiction tag if unchecked
+      let newGenres = selectedGenres.filter((genre) => genre !== value);
+      if (genreIsFiction) {
+        newGenres = newGenres.filter((genre) => genre !== 'Fiction');
+      } else if (genreIsNonFiction) {
+        newGenres = newGenres.filter((genre) => genre !== 'Non-Fiction');
+      }
+      setSelectedGenresLocal(newGenres);
     }
   };
 

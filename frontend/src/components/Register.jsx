@@ -44,13 +44,26 @@ export function Register() {
     setSuccess(false);
 
     try {
-      const user = await authService.createAccount(data);
-      if (user) {
+      // Modify occupation based on additional fields
+      let occupation = data.occupation;
+      if (occupation === "student" && data.class) {
+        occupation = `Student of ${data.class}`;
+      } else if (occupation === "professional" && data.field) {
+        occupation = `Professional (${data.field})`;
+      } else if (occupation === "other" && data.details) {
+        occupation = data.details;
+      }
+      data.occupation = occupation;
+
+      const response = await authService.createAccount(data);
+      const useData = response.data.data
+      console.log(useData)
+      if (useData) {
         setSuccess(true);
-        dispatch(login(user));
+        dispatch(login(useData));
         setTimeout(() => {
-          navigate("/rec");
-        }, 1000); // Delay for a bit to show success message
+           navigate("/rec");
+        }, 1000); 
       } else {
         throw new Error("Registration failed without error message.");
       }

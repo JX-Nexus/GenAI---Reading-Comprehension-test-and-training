@@ -2,6 +2,10 @@ import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiError} from '../utils/ApiError.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import {User} from '../models/user.model.js';
+import dotenv from 'dotenv'
+dotenv.config({
+    path: './.env'
+})
 
 
 
@@ -61,6 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
     const {email,password} = req.body;
+    
 
     if (!(email)) {
         throw new ApiError(400, 'Username or email is required');
@@ -87,7 +92,7 @@ const loginUser = asyncHandler(async (req, res) => {
         user._id
     );
 
-    const loggedInUser = await User.findById(user._id).select(
+    const data = await User.findById(user._id).select(
         '-password -refreshToken'
     );
 
@@ -104,9 +109,8 @@ const loginUser = asyncHandler(async (req, res) => {
             new ApiResponse(
                 200,
                 {
-                    user: accessToken,
-                    refreshToken,
-                    loggedInUser,
+                    
+                    data,
                 },
                 'User loggedIn successfully'
             )

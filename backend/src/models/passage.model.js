@@ -28,6 +28,9 @@ const userSchema = new Schema({
     bookType:{
         type:String
     },
+    points:{
+      type: String
+    },
     questions :[questionSchema]
 
     })

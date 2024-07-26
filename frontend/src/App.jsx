@@ -12,6 +12,7 @@ function App() {
     const initializeApp = async () => {
       try {
         const userData = await authService.getCurrentUser();
+        console.log(userData)
         if (userData) {
           dispatch(login({ userData }));
         
@@ -24,8 +25,6 @@ function App() {
         
       } catch (error) {
         console.error('Initialization error:', error);
-      } finally {
-        setLoading(false);
       }
     };
   

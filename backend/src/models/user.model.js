@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+
 const userSchema = new Schema(
     {
         username: {
@@ -92,11 +93,11 @@ userSchema.methods.generateAccessToken = function () {
             username: this.username,
             email: this.email,
             fullname: this.fullname,
-            avatar: this.avatar,
+            occupation:this.occupation
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+            expiresIn: '2d',
         }
     );
 };

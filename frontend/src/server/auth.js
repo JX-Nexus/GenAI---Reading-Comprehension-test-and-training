@@ -34,7 +34,7 @@ export class AuthService {
      async login ({ email, password }) {
         try {
             const response = await axios.post('/api/v1/users/login', { email, password });
-            return response.data.data;
+            return response.data;
 
         } catch (error) {
             if (error.response) {
@@ -58,7 +58,7 @@ export class AuthService {
             const response = await axios.get('/api/v1/users/current-user');
 
             
-            return response.data.data;
+            return response.data
         } catch (error) {   
             console.log("backend service :: getCurrentUser :: error", error);
             throw error

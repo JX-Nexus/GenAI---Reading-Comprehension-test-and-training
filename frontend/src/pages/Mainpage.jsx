@@ -1,87 +1,121 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PassService from '../server/pass.js';
+import { setQuestions, setPassage } from '../store/slice/passageSlice';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { setPassage, setTime } from '../store/slice/passageSlice';
 
 const MainPage = () => {
-  const [passage, setPassageLocal] = useState('');
-  const [timer, setTimer] = useState(0); // Timer in seconds
-  const [timerStarted, setTimerStarted] = useState(false);
-  const [canFinish, setCanFinish] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  
-  const { bookType, genres } = useSelector((state) => state.passage);
+    const [passageId, setPassageId] = useState("");
+    const [passage, setPassageLocal] = useState(null);
+    const [timer, setTimer] = useState(0);
+    const [isTimerStarted, setIsTimerStarted] = useState(false);
+    const [canFinish, setCanFinish] = useState(true);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { 
+      genres,
+      bookType,
+      mythology,
+      scripturesName,
+      selectedType,
+      type } = useSelector((state) => state.passage);
+    const { occupation } = useSelector((state) => state.auth.userData);
 
-  useEffect(() => {
-    if (timer > 0 && timerStarted) {
-      const interval = setInterval(() => {
-        setTimer(prevTimer => prevTimer - 1);
-      }, 1000);
+    const handleGetParagraph = async () => {
+        try {
+            const response = await PassService.getPassage({ occupation,
+              genres,
+              bookType,
+              mythology,
+              scripturesName,
+              selectedType,
+              type });
+              
+            console.log(response);
+            setPassageLocal(response.data.text);
+            setPassageId(response.data.passageId);
+            dispatch(setPassage(response.passage));
+            setTimer(300);
+            setIsTimerStarted(true);
+            setCanFinish(false);
+        } catch (error) {
+            console.error('Error fetching passage:', error);
+        }
+    };
 
-      if (timer <= 0) {
-        clearInterval(interval);
-        setCanFinish(true);
-      }
+    useEffect(() => {
+        let interval;
+        if (isTimerStarted) {
+            interval = setInterval(() => {
+                setTimer(prev => {
+                    if (prev <= 0) {
+                        clearInterval(interval);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [isTimerStarted]);
 
-      return () => clearInterval(interval);
-    }
-  }, [timer, timerStarted]);
+    const handleFinish = async (passageId) => {
+        if (timer >= 120) { // Ensure user has read for at least 2 minutes
+            try {
+                console.log('Generating questions for passageId:', passageId);
+                const response = await PassService.generateQuestions(passageId);
+                const questions = response.data.questions;
+                dispatch(setQuestions(questions));
+                console.log('Questions generated:', questions);
+                setTimeout(() => {
+                    navigate(`${passageId}`);
+                }, 1000);
+                console.log('Time spent reading (seconds):', timer);
+            } catch (error) {
+                console.error('Failed to generate questions:', error);
+                alert('There was an error generating the questions. Please try again.');
+            }
+        } else {
+            alert('You need to spend at least 2 minutes reading.');
+        }
+    };
 
-  const handleGetParagraph = async () => {
-    try {
-      const response = await axios.post('/api/v1/passages', { bookType, genres });
-      setPassageLocal(response.data.passage);
-      dispatch(setPassage(response.data.passage));
-      setTimer(300); // 5 minutes timer
-      setTimerStarted(true);
-      setCanFinish(false);
-    } catch (error) {
-      console.error('Error fetching passage:', error);
-    }
-  };
-
-  const handleFinish = async () => {
-    if (timer >= 120) {
-      try {
-        await axios.post('/api/v1/save-time', { timeSpent: 300 - timer });
-        navigate('/next-page'); // Replace with the actual route you want to navigate to
-      } catch (error) {
-        console.error('Error saving time:', error);
-      }
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-8">
-      <div className="p-8 bg-white border border-green-400 rounded-lg shadow-lg text-center max-w-lg">
-        <h1 className="text-3xl font-bold text-green-600 mb-4">Welcome to ReadingWise</h1>
-        <button
-          onClick={handleGetParagraph}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
-        >
-          Get Paragraph
-        </button>
-        {passage && (
-          <div className="mt-6 text-left">
-            <h2 className="text-lg font-semibold text-green-600">Your Passage</h2>
-            <p className="text-gray-700 mt-2">{passage}</p>
-          </div>
-        )}
-        <div className="mt-6">
-          <p className="text-gray-700 mb-2">Time Remaining: {Math.max(timer, 0)} seconds</p>
-          <button
-            onClick={handleFinish}
-            disabled={!canFinish}
-            className={`px-4 py-2 rounded ${canFinish ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-400 text-gray-200 cursor-not-allowed'}`}
-          >
-            Finish
-          </button>
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className={`p-8 bg-white border border-green-400 rounded-lg shadow-lg text-center ${passage ? 'max-w-4xl' : 'max-w-lg'}`}>
+                {!passage ? (
+                    <>
+                        <h1 className="text-3xl font-bold text-green-600 mb-4">Welcome to ReadingWise</h1>
+                        <p className="text-gray-700 mb-6">
+                            Click the button below to get a passage based on your selected book type and genres.
+                        </p>
+                        <button
+                            onClick={handleGetParagraph}
+                            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
+                        >
+                            Get Passage
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <div className="mt-6 p-6 bg-gray-50 border border-gray-300 rounded-lg">
+                            <p>{passage}</p>
+                        </div>
+                        <div className="mt-6">
+                            <p>Time left: {Math.floor(timer / 60)}:{('0' + (timer % 60)).slice(-2)}</p>
+                            <button
+                                onClick={() => handleFinish(passageId)}
+                                className={`px-4 py-2 rounded w-full ${timer < 120 ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'} text-white transition duration-200`}
+                                disabled={timer < 120}
+                            >
+                                Finish
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default MainPage;
