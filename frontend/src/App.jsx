@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import authService from './server/auth.js'
+import { login, logout } from './store/slice/authSlice.js'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -12,7 +13,7 @@ function App() {
     const initializeApp = async () => {
       try {
         const userData = await authService.getCurrentUser();
-        console.log(userData)
+        
         if (userData) {
           dispatch(login({ userData }));
         

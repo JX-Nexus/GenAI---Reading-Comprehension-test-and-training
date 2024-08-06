@@ -27,38 +27,50 @@ const Education = () => {
     'High School': ['Calculus', 'Chemistry', 'World History', 'Literature', 'Physical Education'],
     Undergraduate: ['Computer Science', 'Engineering', 'Economics', 'Psychology', 'Biology'],
     Postgraduate: ['Advanced Research Methods', 'Theoretical Physics', 'Philosophy', 'Literary Criticism', 'Data Science'],
-    Professional: ['Project Management', 'Business Analytics', 'Software Development', 'Law', 'Medicine'],
+    Professional: ['Project Management', 'Business Analytics', 'Software Development', 'Law', 'Medicine', "Singer", 'Trader', 'Streamer', 'Artist'],
   };
 
-  const professions = [
-    'Coder',
-    'Trader',
-    'Businessman',
-    'Singer',
-  ];
-
   const specializationsByProfession = {
-    Coder: ['Programming Languages', 'Software Development', 'Data Science', 'DevOps', 'DSA'],
-    Trader: ['Forex Trading', 'Stock Market', 'Commodities Trading'],
-    Businessman: ['Business Psychology', 'Marketing Strategies', 'Leadership Skills'],
-    Singer: ['Vocal Techniques', 'Music Theory', 'Instrumental Training'],
+    'Business Analytics': ['Marketing Analysis', 'Financial Analysis', 'Data Analysis', 'Operations Analysis'],
+    'Project Management': ['Agile Project Management', 'Waterfall Project Management', 'Risk Management'],
+    'Software Development': ['Frontend Development', 'Backend Development', 'Full Stack Development'],
+    'Law': ['Corporate Law', 'Criminal Law', 'Family Law'],
+    'Medicine': ['Cardiology', 'Neurology', 'Pediatrics'],
+    "Singer": ['Vocal Training', 'Music Theory', 'Performance Techniques'],
+    'Trader': ['Stock Trading', 'Forex Trading', 'Crypto Trading'],
+    'Streamer': ['Game Streaming', 'IRL Streaming', 'Creative Streaming'],
+    'Artist': ['Painting', 'Sculpting', 'Digital Art'],
   };
 
   const detailsBySpecialization = {
-    'Programming Languages': ['JavaScript', 'Python', 'Java', 'C++', 'Go'],
-    'Software Development': ['Web Development', 'Mobile Development', 'Desktop Applications'],
-    'Data Science': ['Machine Learning', 'Data Analysis', 'Big Data'],
-    'DevOps': ['CI/CD', 'Infrastructure as Code', 'Monitoring'],
-    'DSA': ['Algorithms', 'Data Structures', 'Problem Solving'],
+    'Marketing Analysis': ['Consumer Behavior', 'Market Research', 'Brand Analysis'],
+    'Financial Analysis': ['Financial Statements', 'Investment Analysis', 'Budgeting'],
+    'Data Analysis': ['Big Data', 'Machine Learning', 'Predictive Analytics'],
+    'Operations Analysis': ['Supply Chain Management', 'Process Improvement', 'Performance Metrics'],
+    'Agile Project Management': ['Scrum', 'Kanban', 'Lean'],
+    'Waterfall Project Management': ['Planning', 'Execution', 'Closing'],
+    'Risk Management': ['Risk Assessment', 'Risk Mitigation', 'Risk Monitoring'],
+    'Frontend Development': ['HTML', 'CSS', 'JavaScript'],
+    'Backend Development': ['Node.js', 'Python', 'Java'],
+    'Full Stack Development': ['React', 'Node.js', 'Databases'],
+    'Corporate Law': ['Contract Law', 'Employment Law', 'Intellectual Property'],
+    'Criminal Law': ['Criminal Procedure', 'Evidence', 'Sentencing'],
+    'Family Law': ['Divorce', 'Child Custody', 'Adoption'],
+    'Cardiology': ['Heart Diseases', 'Cardiac Surgery', 'Preventive Cardiology'],
+    'Neurology': ['Brain Disorders', 'Neurosurgery', 'Neurological Rehabilitation'],
+    'Pediatrics': ['Child Health', 'Pediatric Surgery', 'Neonatology'],
+    'Vocal Training': ['Voice Modulation', 'Breathing Techniques', 'Pitch Control'],
+    'Music Theory': ['Scales', 'Chords', 'Harmony'],
+    'Performance Techniques': ['Stage Presence', 'Audience Interaction', 'Mic Techniques'],
+    'Stock Trading': ['Equities', 'Options', 'ETFs'],
     'Forex Trading': ['Currency Pairs', 'Technical Analysis', 'Fundamental Analysis'],
-    'Stock Market': ['Equities', 'Options', 'ETFs'],
-    'Commodities Trading': ['Oil', 'Gold', 'Agricultural Products'],
-    'Business Psychology': ['Consumer Behavior', 'Organizational Behavior', 'Motivational Strategies'],
-    'Marketing Strategies': ['Digital Marketing', 'Brand Management', 'Market Research'],
-    'Leadership Skills': ['Team Management', 'Decision Making', 'Negotiation'],
-    'Vocal Techniques': ['Breathing Techniques', 'Voice Modulation', 'Pitch Control'],
-    'Music Theory': ['Scales', 'Chords', 'Rhythm'],
-    'Instrumental Training': ['Guitar', 'Piano', 'Drums'],
+    'Crypto Trading': ['Blockchain', 'Altcoins', 'Market Trends'],
+    'Game Streaming': ['Gameplay', 'Audience Engagement', 'Streaming Setup'],
+    'IRL Streaming': ['Real-Life Content', 'Audience Interaction', 'Streaming Techniques'],
+    'Creative Streaming': ['Art Creation', 'Creative Process', 'Community Building'],
+    'Painting': ['Oil Painting', 'Watercolor', 'Acrylic'],
+    'Sculpting': ['Clay', 'Stone', 'Metal'],
+    'Digital Art': ['Graphic Design', '3D Modeling', 'Digital Illustration'],
   };
 
   const handleLevelChange = (event) => {
@@ -71,6 +83,9 @@ const Education = () => {
 
   const handleSubjectChange = (event) => {
     setSelectedSubject(event.target.value);
+    setSelectedProfession('');
+    setSelectedSpecialization('');
+    setSelectedDetail('');
   };
 
   const handleProfessionChange = (event) => {
@@ -165,7 +180,7 @@ const Education = () => {
           {selectedSubject && (
             <>
               <h2 className="text-lg font-semibold text-green-600 mt-6">Select Profession</h2>
-              {professions.map((profession) => (
+              {Object.keys(specializationsByProfession).map((profession) => (
                 <div key={profession} className="mb-2">
                   <label className="inline-flex items-center">
                     <input

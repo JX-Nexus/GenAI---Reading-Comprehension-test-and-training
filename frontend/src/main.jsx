@@ -60,7 +60,7 @@ const router = createBrowserRouter([
           ),
     },
     {
-      path: "novel/genres",
+      path: "novel/types",
       element: (
         <AuthLayout>
           <Novel />
